@@ -1,0 +1,116 @@
+/*Apply the Lato font */
+body {
+        font-family: 'Lato', sans-serif;
+}
+
+
+/* Make the map full width */
+html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+}
+
+#map {
+        height:100%
+}
+
+/*Style the Search Header Bar */
+#search-header {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 10;
+    width: 100%;
+    background-color: rgba(38, 98, 148, .8)
+}
+
+#search-header h2 {
+    width: 100%;
+    padding-left: 3%;
+    color:#ffffff;
+}
+/* Make the header responsive on Mobile */
+@media only screen and (min-width: 480px) {
+        #search-header h2 {
+                display: inline;
+                float: left;
+                width: 65%;
+        }
+}
+              
+#search-card {
+    padding: 10px;
+    display: block;
+    width:100%;
+    margin: 1%;
+    background-color:#ffffff;
+    min-height:30px;
+    position:relative;
+}
+/* Make the header responsive on Mobile */
+@media only screen and (min-width: 480px) {
+        #search-card {        
+            max-width: 20%;
+            float:left
+        }
+}
+
+#search-input {
+        border:none!important;
+        font-family:Lato, sans-serif;
+        font-size:1.2em;
+        padding:1%;
+        float:left;
+}
+
+#search-button-container {
+        float:left;
+        position:absolute;
+        top:10px;
+        right:10px;
+}
+
+#search-button {
+        display:block;
+        padding:15px;
+        border:none;
+}
+
+#search-button::before {
+    content: '';
+    display: block;
+    background: url(../img/search.png);
+    background-size: 72px 24px;
+}
+
+/*Style the Info Windows */
+#description {
+        font-family: Lato, sans-serif;
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+#infowindow-content .title {
+        font-weight: bold;
+      }
+
+#map #infowindow-content {
+        display: inline;
+      }
+
+#title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+#target {
+        width: 345px;
+      }
+
+/*Hide the window initially */
+#infowindow-content {
+        display: none;
+      }
