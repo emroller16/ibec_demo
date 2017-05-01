@@ -1,108 +1,253 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>iBec Demo</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-	  
-    <!-- Custom CSS -->
-    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css" type="text/css">   
-	  
-  </head>
-  <body>
-	<div id="search-header">
-        	<h2>Where do you want to eat?</h2>
-    		<div class="search-card" id="search-card">
-      			<div id="search-container">
-        			<input id="search-input" type="text" placeholder="e.g. Tacqueria">
-				<div id = "search-button-container">
-					<button aria-label="search" id = "search-button"></button>
-				</div>
-			</div>
-    		</div>
-	  </div>
-    <div id="map"></div>
-    <div id="infowindow-content">
-      <img src="" width="16" height="16" id="place-icon">
-      <span id="place-name"  class="title"></span><br>
-      <span id="place-address"></span>
-    </div>
+    <head>
+        <title>iBec Demo</title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+
+        <!-- Custom CSS -->
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link rel="stylesheet" href="css/main.css" type="text/css">   
+
+    </head>
+    <body>
+        <div id="search-header">
+            <h2>Where do you want to eat?</h2>
+            <div class="search-card" id="search-card">
+                <div id="locationField">
+                    <input id="search-input" type="text" placeholder="e.g. Tacqueria">
+                    <input id="autocomplete" style="display:none;" type="text" placeholder="e.g. Tacqueria">
+                    <div id = "search-button-container">
+                        <button aria-label="search" id = "search-button"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="map"></div>
+        <div id="infowindow-content">
+            <img src="" width="16" height="16" id="place-icon">
+            <span id="place-name"  class="title"></span><br>
+            <span id="place-address"></span>
+        </div>
+
+        <div id="map"></div>
+
+        <div id="listing">
+            <table id="resultsTable">
+                <tbody id="results"></tbody>
+            </table>
+        </div>
+
+        <div style="display: none">
+            <div id="info-content">
+                <table>
+                    <tr id="iw-url-row" class="iw_table_row">
+                        <td id="iw-icon" class="iw_table_icon"></td>
+                        <td id="iw-url"></td>
+                    </tr>
+                    <tr id="iw-address-row" class="iw_table_row">
+                        <td class="iw_attribute_name">Address:</td>
+                        <td id="iw-address"></td>
+                    </tr>
+                    <tr id="iw-phone-row" class="iw_table_row">
+                        <td class="iw_attribute_name">Telephone:</td>
+                        <td id="iw-phone"></td>
+                    </tr>
+                    <tr id="iw-rating-row" class="iw_table_row">
+                        <td class="iw_attribute_name">Rating:</td>
+                        <td id="iw-rating"></td>
+                    </tr>
+                    <tr id="iw-website-row" class="iw_table_row">
+                        <td class="iw_attribute_name">Website:</td>
+                        <td id="iw-website"></td>
+                    </tr>
+                </table>
+            </div>
+        </div> 
 
 
-    <script>
-    function initMap() {
-	 //Set the map to initialize in Portland
-        var map = new google.maps.Map(document.getElementById('map'), {
-			center: {lat: 43.6615, lng: -70.2553},
-			zoom: 13
-        });
+        <script>
+        //This functionality allows a user to search for a type of restaurant, ie "chinese food"
+        // and display all of the relevant restaurants in Portland on the map. 
 
-    var input = document.getElementById('search-input');
-	
-    var autocomplete = new google.maps.places.Autocomplete(input);
-	
-	//Enable the search button
-	document.getElementById('search-button').onclick = function () {
-    		var input = document.getElementById('search-button');
+        //Associates autocomplete with the input field
+            document.getElementById('search-input').addEventListener(
+                    'change', function() {
+                     
+                        document.getElementById('autocomplete').value = document.getElementById('search-input').value;
+                           console.log(document.getElementById('autocomplete').value);
+                           onPlaceChanged();
+                    });
 
-    		google.maps.event.trigger(input, 'focus')
-   		google.maps.event.trigger(input, 'keydown', { keyCode: 13 });
-		};
-	       
-    // Bind the map's bounds (viewport) property to the autocomplete object,
-    // so that the autocomplete requests use the current map bounds for the
-    // bounds option in the request.
-    autocomplete.bindTo('bounds', map);
-    var infowindow = new google.maps.InfoWindow();
-    var infowindowContent = document.getElementById('infowindow-content');
-    infowindow.setContent(infowindowContent);
-	    
-	//Set a new marker for the selected results
-    var marker = new google.maps.Marker({
-		map: map,
-		anchorPoint: new google.maps.Point(0, -29)
-    });
-	// Close the info window and hide marker when user searches a new place
-    autocomplete.addListener('place_changed', function() {
-		infowindow.close();
-		marker.setVisible(false);
-		var place = autocomplete.getPlace();
-		if (!place.geometry) {
-				// User entered the name of a Place that was not suggested and
-				// pressed the Enter key, or the Place Details request failed.
-            window.alert("No details available for input: '" + place.name + "'");
-            return;
-         }
-		
-         // If the place has a geometry, then present it on a map.
-         if (place.geometry.viewport) {
-			map.fitBounds(place.geometry.viewport);
-        } else {
-			map.setCenter(place.geometry.location);
-			map.setZoom(17);  
-		}
-		
-	// Place the marker at the location searched
-        marker.setPosition(place.geometry.location);
-        marker.setVisible(true);
-        var address = '';
-	// Display address in a readable format
-        if (place.address_components) {
-            address = [
-				(place.address_components[0] && place.address_components[0].short_name || ''),
-				(place.address_components[1] && place.address_components[1].short_name || ''),
-				(place.address_components[2] && place.address_components[2].short_name || '')
-            ].join(' ');
-        }
-        infowindowContent.children['place-icon'].src = place.icon;
-        infowindowContent.children['place-name'].textContent = place.name;
-        infowindowContent.children['place-address'].textContent = address;
-        infowindow.open(map, marker);
-    });
-    }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmjLDnZ7E8t1US9nJF2X-Uvv9PEhG2-sY&libraries=places&callback=initMap" async defer></script>
-  </body>
+            var map, places, infoWindow;
+            var markers = [];
+            var autocomplete;
+            var countryRestrict = {'country': 'us'};
+            var MARKER_PATH = 'https://developers.google.com/maps/documentation/javascript/images/marker_green';
+            var hostnameRegexp = new RegExp('^https?://.+?/');
+
+
+            //Initializes the map to Portland, ME	
+            function initMap() {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: {lat: 43.6615, lng: -70.2553},
+                    zoom: 13,
+                    panControl: false,
+                });
+
+                //Creates a new InfoWindow for each marker created.
+                infoWindow = new google.maps.InfoWindow({
+                    content: document.getElementById('info-content')
+                });
+
+                // Create the autocomplete object and associate it with the UI input control.
+                // Restrict the search to the type "establishment".
+                autocomplete = new google.maps.places.Autocomplete(
+                        /** @type {!HTMLInputElement} */ (
+                                document.getElementById('autocomplete')), {
+                    types: ['establishment'],
+                    componentRestrictions: countryRestrict
+                });
+                places = new google.maps.places.PlacesService(map);
+
+                autocomplete.addListener('place_changed', onPlaceChanged);
+            }
+
+
+// Zooms in on the results when a user enters a type of food.
+// Centers on Portland Maine.
+            function onPlaceChanged() {
+                var place = autocomplete.getPlace();
+                place = {"address_components":[{"long_name":"53","short_name":"53","types":["street_number"]},{"long_name":"Baxter Boulevard","short_name":"Baxter Blvd","types":["route"]},{"long_name":"Oakdale","short_name":"Oakdale","types":["neighborhood","political"]},{"long_name":"Portland","short_name":"Portland","types":["locality","political"]},{"long_name":"Cumberland County","short_name":"Cumberland County","types":["administrative_area_level_2","political"]},{"long_name":"Maine","short_name":"ME","types":["administrative_area_level_1","political"]},{"long_name":"United States","short_name":"US","types":["country","political"]},{"long_name":"04101","short_name":"04101","types":["postal_code"]}],"adr_address":"<span class=\"street-address\">53 Baxter Blvd</span>, <span class=\"locality\">Portland</span>, <span class=\"region\">ME</span> <span class=\"postal-code\">04101</span>, <span class=\"country-name\">USA</span>","formatted_address":"53 Baxter Blvd, Portland, ME 04101, USA","formatted_phone_number":"(207) 653-7224","geometry":{"location":{"lat":43.66467300000001,"lng":-70.26983789999997},"viewport":{"south":43.6633350197085,"west":-70.27166423029149,"north":43.6660329802915,"east":-70.26896626970847}},"icon":"https://maps.gstatic.com/mapfiles/place_api/icons/generic_business-71.png","id":"a5a18c62158143126a4c5f62822fa8191090becb","international_phone_number":"+1 207-653-7224","name":"Portland Maine Real Estate","opening_hours":{"open_now":false,"periods":[{"close":{"day":1,"time":"1900","hours":19,"minutes":0,"nextDate":1493679600000},"open":{"day":1,"time":"0900","hours":9,"minutes":0,"nextDate":1493643600000}},{"close":{"day":2,"time":"1900","hours":19,"minutes":0,"nextDate":1493766000000},"open":{"day":2,"time":"0900","hours":9,"minutes":0,"nextDate":1493730000000}},{"close":{"day":3,"time":"1900","hours":19,"minutes":0,"nextDate":1493852400000},"open":{"day":3,"time":"0900","hours":9,"minutes":0,"nextDate":1493816400000}},{"close":{"day":4,"time":"1900","hours":19,"minutes":0,"nextDate":1493938800000},"open":{"day":4,"time":"0900","hours":9,"minutes":0,"nextDate":1493902800000}},{"close":{"day":5,"time":"1900","hours":19,"minutes":0,"nextDate":1494025200000},"open":{"day":5,"time":"0900","hours":9,"minutes":0,"nextDate":1493989200000}}],"weekday_text":["Monday: 9:00 AM – 7:00 PM","Tuesday: 9:00 AM – 7:00 PM","Wednesday: 9:00 AM – 7:00 PM","Thursday: 9:00 AM – 7:00 PM","Friday: 9:00 AM – 7:00 PM","Saturday: Closed","Sunday: Closed"]},"place_id":"ChIJpUTCFHScskwRKgS1sjLPM6M","reference":"CmRSAAAAnN0xmAmx-jgl3ki4P2GezC4WbCKkf2xGhdde40ysVRTS8kgJjm_ehvSkg-kjxBJCupVD_CfNJ_RIhSvK7PZkLO_FQskutqUXr04XNy8rF-esy_c8n7YFGjuBHeLCfIkwEhB6fpBe27eTS1uoEgWMsRrNGhQhsS10ZJqeH49c4NMoXFJ3oIMmeA","scope":"GOOGLE","types":["real_estate_agency","point_of_interest","establishment"],"url":"https://maps.google.com/?cid=11759970868648018986","utc_offset":-240,"vicinity":"53 Baxter Boulevard, Portland","website":"http://www.portland-me-realestate.com/","html_attributions":[]};
+                if (place.geometry) {
+                    map.panTo(place.geometry.location);
+                    map.setZoom(10);
+                    search();
+                } else {
+                    document.getElementById('autocomplete').placeholder = 'What would you like to eat?';
+                }
+            }
+
+// Search for restaurants in Portland, within the viewport of the map. Restrict 
+// the results to to type "food".
+            function search() {
+                var search = {
+                    bounds: map.getBounds(),
+                    types: ['food'],
+                    keyword: document.getElementById('autocomplete').value
+                };
+                //console.log(search);
+
+                places.nearbySearch(search, function(results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        clearResults();
+                        clearMarkers();
+                        // Create a marker for each restaurant found, and
+                        // assign a letter of the alphabetic to each marker icon.
+                        for (var i = 0; i < results.length; i++) {
+                            var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+                            var markerIcon = MARKER_PATH + markerLetter + '.png';
+                            
+                            markers[i] = new google.maps.Marker({
+                                position: results[i].geometry.location,
+                                icon: markerIcon
+                            });
+                            // Show details of the restaurant when a user clicks the marker.
+                            markers[i].placeResult = results[i];
+                            google.maps.event.addListener(markers[i], 'click', showInfoWindow);
+                            setTimeout(dropMarker(i), i * 100);
+                            addResult(results[i], i);
+                        }
+                    }
+                });
+            }
+
+            function clearMarkers() {
+                for (var i = 0; i < markers.length; i++) {
+                    if (markers[i]) {
+                        markers[i].setMap(null);
+                    }
+                }
+                markers = [];
+            }
+
+            function dropMarker(i) {
+                return function() {
+                    markers[i].setMap(map);
+                };
+            } 
+
+            // Styles the markers as they put on the map. Attaches a letter to each of the 
+            // markers and also displays an image for the associated type. 
+            function addResult(result, i) {
+                var results = document.getElementById('results');
+                var markerLetter = String.fromCharCode('A'.charCodeAt(0) + (i % 26));
+                var markerIcon = MARKER_PATH + markerLetter + '.png';
+                
+                markerIcon.onclick = function() {
+                    google.maps.event.trigger(markers[i], 'click');
+                };
+
+                var icon = document.createElement('img');
+                icon.src = markerIcon;
+                icon.setAttribute('class', 'placeIcon');
+                icon.setAttribute('className', 'placeIcon');
+            }
+
+            function clearResults() {
+                var results = document.getElementById('results');
+                while (results.childNodes[0]) {
+                    results.removeChild(results.childNodes[0]);
+                }
+            }
+
+// Get the place details for each restaurant. Show the info
+// in an info window that is displayed when a user clicks the associated marker
+            function showInfoWindow() {
+                var marker = this;
+                places.getDetails({placeId: marker.placeResult.place_id},
+                function(place, status) {
+                    if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                        return;
+                    }
+                    infoWindow.open(map, marker);
+                    buildIWContent(place);
+                });
+            }
+
+// Load the place information into the HTML elements used by the info window.
+            function buildIWContent(place) {
+                document.getElementById('iw-icon').innerHTML = '<img class="restaurantIcon" ' +
+                        'src="' + place.icon + '"/>';
+                document.getElementById('iw-url').innerHTML = '<b><a href="' + place.url +
+                        '">' + place.name + '</a></b>';
+                document.getElementById('iw-address').textContent = place.vicinity;
+
+                if (place.formatted_phone_number) {
+                    document.getElementById('iw-phone-row').style.display = '';
+                    document.getElementById('iw-phone').textContent =
+                            place.formatted_phone_number;
+                } else {
+                    document.getElementById('iw-phone-row').style.display = 'none';
+                }
+
+                // The regexp isolates the first part of the URL (domain plus subdomain)
+                // to give a short URL for displaying in the info window.
+                if (place.website) {
+                    var fullUrl = place.website;
+                    var website = hostnameRegexp.exec(place.website);
+                    if (website === null) {
+                        website = 'http://' + place.website + '/';
+                        fullUrl = website;
+                    }
+                    document.getElementById('iw-website-row').style.display = '';
+                    document.getElementById('iw-website').textContent = website;
+                } else {
+                    document.getElementById('iw-website-row').style.display = 'none';
+                }
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmjLDnZ7E8t1US9nJF2X-Uvv9PEhG2-sY&libraries=places&callback=initMap" async defer></script>
+    </body>
 </html>
