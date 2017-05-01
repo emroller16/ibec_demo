@@ -73,15 +73,18 @@ html, body {
 
 #search-button {
         display:block;
-        padding:15px;
+        padding:3px;
         border:none;
+        background-color:#ffffff;
 }
 
 #search-button::before {
     content: '';
     display: block;
     background: url(../img/search.png);
-    background-size: 72px 24px;
+    background-size: 30px 30px;
+    width:30px;
+    height:30px;
 }
 
 /*Style the Info Windows */
