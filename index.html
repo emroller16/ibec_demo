@@ -17,7 +17,6 @@
             <div class="search-card" id="search-card">
                 <div id="locationField">
                     <input id="search-input" type="text" placeholder="e.g. Tacqueria">
-                    <input id="autocomplete" style="display:none;" type="text" placeholder="e.g. Tacqueria">
                     <div id = "search-button-container">
                         <button aria-label="search" id = "search-button"></button>
                     </div>
@@ -74,9 +73,8 @@
         //Associates autocomplete with the input field
             document.getElementById('search-input').addEventListener(
                     'change', function() {
-                     
-                        document.getElementById('autocomplete').value = document.getElementById('search-input').value;
-                           console.log(document.getElementById('autocomplete').value);
+                        document.getElementById('search-input').value
+                           console.log(document.getElementById('search-input').value);
                            onPlaceChanged();
                     });
 
@@ -105,7 +103,7 @@
                 // Restrict the search to the type "establishment".
                 autocomplete = new google.maps.places.Autocomplete(
                         /** @type {!HTMLInputElement} */ (
-                                document.getElementById('autocomplete')), {
+                            document.getElementById('search-input')), {
                     types: ['establishment'],
                     componentRestrictions: countryRestrict
                 });
@@ -125,7 +123,7 @@
                     map.setZoom(15);
                     search();
                 } else {
-                    document.getElementById('autocomplete').placeholder = 'What would you like to eat?';
+                   document.getElementById('search-input').placeholder = 'What would you like to eat?';
                 }
             }
 
@@ -135,7 +133,7 @@
                 var search = {
                     bounds: map.getBounds(),
                     types: ['food'],
-                    keyword: document.getElementById('autocomplete').value
+                    keyword: document.getElementById('search-input').value
                 };
                 //console.log(search);
 
