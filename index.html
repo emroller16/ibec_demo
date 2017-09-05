@@ -8,6 +8,8 @@
 
         <!-- Custom CSS -->
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
         <link rel="stylesheet" href="css/main.css" type="text/css">   
         
         <!-- Load jQuery -->
@@ -18,14 +20,12 @@
     <body>
         <div id="search-header">
             <h2>Where do you want to eat?</h2>
-            <div class="search-card" id="search-card">
-                <div id="locationField">
-                    <input id="search-input" type="text" placeholder="e.g. Tacqueria">
-                    <div id = "search-button-container">
-                        <button aria-label="search" id = "search-button"></button>
-                    </div>
+            <div id = "search-container">
+        		<input id="search-input" type="text" placeholder="e.g. Tacqueria">
+				<div id = "search-button-container">
+					<button aria-label="search" id = "search-button"><i class="material-icons">search</i></button>
                 </div>
-            </div>
+    		  </div>
         </div>
         <div id="map"></div>
         <div id="infowindow-content">
