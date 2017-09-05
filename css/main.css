@@ -15,76 +15,93 @@ html, body {
         height:100%
 }
 
-/*Style the Search Header Bar */
+/*Style the Search Header Barand use flexbox to make it responsive. */
 #search-header {
     position: absolute;
     left: 0px;
     top: 0px;
     z-index: 10;
     width: 100%;
-    background-color: rgba(38, 98, 148, .8)
+    background-color: rgba(38, 98, 148, .8);
+    display:flex;
+    flex-wrap: wrap;
+    justify-content:center;
 }
 
 #search-header h2 {
-    width: 100%;
     padding-left: 3%;
     color:#ffffff;
+    text-align: center;
 }
-/* Make the header responsive on Mobile */
-@media only screen and (min-width: 480px) {
+
+/*Using mobile first and min-width media queries; make search bar responsive for desktop.*/
+
+@media only screen and (min-width: 650px) {
+        #search-header {
+                justify-content: space-between;
+        }
+
         #search-header h2 {
-                display: inline;
-                float: left;
-                width: 65%;
+                text-align: left;
         }
 }
+
               
-#search-card {
-    padding: 10px;
-    display: block;
-    width:100%;
-    margin: 1%;
-    background-color:#ffffff;
-    min-height:30px;
-    position:relative;
+/*Style the search container, using flexbox for responsiveness.*/
+
+#search-container {
+        display:flex;
+        /*float: left;*/
+        margin: 15px;
+        border-radius:2px;
+        background:#fff!important;
+        flex-grow:.7;
 }
-/* Make the header responsive on Mobile */
-@media only screen and (min-width: 480px) {
-        #search-card {        
-            max-width: 20%;
-            float:left
+
+#search-input:hover, #search-input:focus, #search-input:active{
+    background:none;
+  }
+
+#search-container:hover, #search-container:focus, #search-container:active{
+    background:rgba(250,250,250, .8)!important;
+  }
+
+/*Make searchbar responsive for desktop.*/
+@media only screen and (min-width: 650px) {
+        #search-container { 
+                flex-grow:0;
         }
-}
+}   
 
 #search-input {
         border:none!important;
         font-family:Lato, sans-serif;
         font-size:1.2em;
-        padding:1%;
-        float:left;
+        width:300px;
+        margin:10px 0px 10px 10px;
+        flex-grow:1;
 }
 
+/*Remove outline from search input on focus*/
+#search-input:focus {
+        outline:none!important;
+} 
+
+
 #search-button-container {
+        display: flex;
         float:left;
-        position:absolute;
-        top:10px;
-        right:10px;
 }
 
 #search-button {
-        display:block;
-        padding:3px;
         border:none;
-        background-color:#ffffff;
+        background:none;
+        justify-content: center;
 }
 
-#search-button::before {
-    content: '';
-    display: block;
-    background: url(../img/search.png);
-    background-size: 30px 30px;
-    width:30px;
-    height:30px;
+#search-button .material-icons {
+        color:#8BC34A;
+        font-size: 2.5em;
 }
 
 /*Style the Info Windows */
