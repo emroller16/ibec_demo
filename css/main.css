@@ -58,14 +58,6 @@ html, body {
         flex-grow:.7;
 }
 
-#search-input:hover, #search-input:focus, #search-input:active{
-    background:none;
-  }
-
-#search-container:hover, #search-container:focus, #search-container:active{
-    background:rgba(250,250,250, .8)!important;
-  }
-
 /*Make searchbar responsive for desktop.*/
 @media only screen and (min-width: 650px) {
         #search-container { 
